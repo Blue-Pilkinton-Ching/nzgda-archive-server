@@ -9,53 +9,63 @@ export async function uploadFile(
   Key: string,
   filepath: string
 ) {
-  const buffer = fs.readFileSync(filepath)
   const ContentType = mime.lookup(filepath) || 'application/octet-stream'
+  const fileSize = fs.statSync(filepath).size
 
-  let uploadId
+  // Define the chunk size - S3 requires each part to be at least 5MB (except the last part)
+  const partSize = 5 * 1024 * 1024 // 5MB
+  const numParts = Math.ceil(fileSize / partSize)
+
   try {
-    const response = await s3.createMultipartUpload({
-      Bucket: `${process.env.AWS_BUCKET}`,
+    // Step 1: Start multipart upload to get the upload ID
+    const { UploadId } = await s3.createMultipartUpload({
+      Bucket,
       Key,
       ContentType,
     })
-    uploadId = response.UploadId // S3 generates this UploadId
-  } catch (error) {
-    console.error('Error initiating multipart upload')
-    throw error
-  }
 
-  let partUploadResponse
-  try {
-    partUploadResponse = await s3.uploadPart({
-      Bucket: Bucket,
+    // Step 2: Split the file into parts and upload each part
+    const partPromises = []
+
+    for (let i = 0; i < numParts; i++) {
+      const start = i * partSize
+      const end = (i + 1) * partSize < fileSize ? (i + 1) * partSize : fileSize
+      // Create a stream for this particular part
+      const partStream = fs.createReadStream(filepath, { start, end: end - 1 })
+
+      // Upload the part
+      const partPromise = s3.uploadPart({
+        Bucket,
+        Key,
+        PartNumber: i + 1,
+        UploadId,
+        Body: partStream,
+      })
+
+      partPromises.push(partPromise)
+    }
+
+    // Wait for all parts to be uploaded to get their ETags
+    const uploadedParts = (await Promise.all(partPromises)).map(
+      (part, index) => ({
+        ETag: part.ETag,
+        PartNumber: index + 1,
+      })
+    )
+
+    // Step 3: Complete the multipart upload
+    const completeResponse = await s3.completeMultipartUpload({
+      Bucket,
       Key,
-      Body: buffer,
-      PartNumber: 1,
-      UploadId: uploadId, // Use the UploadId from the initiation step
+      UploadId,
+      MultipartUpload: { Parts: uploadedParts },
     })
+
+    return completeResponse.Location
   } catch (error) {
-    console.error('Error uploading part')
+    console.error('Error with multipart upload', error)
     throw error
   }
-
-  let upload
-  try {
-    const parts = [{ ETag: partUploadResponse.ETag, PartNumber: 1 }]
-    upload = await s3.completeMultipartUpload({
-      Bucket: `${process.env.AWS_BUCKET}`,
-      Key,
-      UploadId: uploadId,
-      MultipartUpload: {
-        Parts: parts,
-      },
-    })
-  } catch (error) {
-    console.error('Error completing multipart upload', error)
-    throw error
-  }
-
-  return upload.Location
 }
 
 export async function uploadFolder(
