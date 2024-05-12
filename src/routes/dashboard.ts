@@ -444,7 +444,7 @@ dashboard.post(
         await Promise.all([
           (async () => {
             await uploadFile(
-              'heihei-game-content',
+              `${process.env.AWS_BUCKET}`,
               `${id}/thumbnail.png`,
               files.thumbnail[0].path
             )
@@ -453,7 +453,7 @@ dashboard.post(
           (async () => {
             if (files.banner) {
               await uploadFile(
-                'heihei-game-content',
+                `${process.env.AWS_BUCKET}`,
                 `${id}/banner.png`,
                 files.banner[0].path
               )
@@ -467,7 +467,7 @@ dashboard.post(
               zip.extractAllTo(`tmp/${id}/game`, true)
 
               await uploadFolder(
-                'heihei-game-content',
+                `${process.env.AWS_BUCKET}`,
                 `tmp/${id}/game/`,
                 `${id}/game/`
               )
@@ -489,10 +489,10 @@ dashboard.post(
               exclude: game.exclude || '',
               name: game.name,
               partner: game.partner,
-              thumbnail: `https://heihei-game-content.s3.ap-southeast-2.amazonaws.com/${id}/thumbnail.png`,
+              thumbnail: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/thumbnail.png`,
               featured: false,
               ...(files.banner && {
-                banner: `https://heihei-game-content.s3.ap-southeast-2.amazonaws.com/${id}/banner.png`,
+                banner: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/banner.png`,
               }),
               educational: game.educational || false,
               approved: false,
@@ -508,11 +508,11 @@ dashboard.post(
                 ...game,
                 id: id,
                 ...(files.game && {
-                  url: `https://heihei-game-content.s3.ap-southeast-2.amazonaws.com/${id}/game/index.html`,
+                  url: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/game/index.html`,
                 }),
-                thumbnail: `https://heihei-game-content.s3.ap-southeast-2.amazonaws.com/${id}/thumbnail.png`,
+                thumbnail: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/thumbnail.png`,
                 ...(files.banner && {
-                  screenshot: `https://heihei-game-content.s3.ap-southeast-2.amazonaws.com/${id}/banner.png`,
+                  screenshot: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/banner.png`,
                 }),
               })
           })(),
@@ -594,10 +594,10 @@ dashboard.patch(
             ).docs[0].ref.update({
               ...gameChanges,
               ...(files.game && {
-                url: `https://heihei-game-content.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/game/index.html`,
+                url: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/game/index.html`,
               }),
               ...(files.banner && {
-                screenshot: `https://heihei-game-content.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/banner.png`,
+                screenshot: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/banner.png`,
               }),
             })
           })(),
@@ -621,7 +621,7 @@ dashboard.patch(
             item.educational = gameChanges.educational
 
             if (files.banner) {
-              item.banner = `https://heihei-game-content.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/banner.png`
+              item.banner = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/banner.png`
             }
 
             await doc.ref.set(data)
@@ -629,7 +629,7 @@ dashboard.patch(
           (async () => {
             if (files.thumbnail) {
               await overriteFile(
-                'heihei-game-content',
+                `${process.env.AWS_BUCKET}`,
                 files.thumbnail[0].path,
                 `${req.params.gameID}/thumbnail.png`
               )
@@ -639,7 +639,7 @@ dashboard.patch(
           (async () => {
             if (files.banner) {
               await overriteFile(
-                'heihei-game-content',
+                `${process.env.AWS_BUCKET}`,
                 files.banner[0].path,
                 `${req.params.gameID}/banner.png`
               )
@@ -653,7 +653,7 @@ dashboard.patch(
               zip.extractAllTo(`tmp/${req.params.gameID}/game`, true)
 
               await overriteFolder(
-                'heihei-game-content',
+                `${process.env.AWS_BUCKET}`,
                 `tmp/${req.params.gameID}/game/`,
                 `${req.params.gameID}/game/`
               )
@@ -720,7 +720,10 @@ dashboard.delete('/:gameID', async (req, res) => {
           await doc.ref.set(data)
         })(),
         (async () => {
-          await deleteFolder('heihei-game-content', `${req.params.gameID}/`)
+          await deleteFolder(
+            `${process.env.AWS_BUCKET}`,
+            `${req.params.gameID}/`
+          )
         })()
       statusCode = 200
     } catch (error) {

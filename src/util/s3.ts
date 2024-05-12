@@ -15,7 +15,7 @@ export async function uploadFile(
   let uploadId
   try {
     const response = await s3.createMultipartUpload({
-      Bucket: 'heihei-game-content',
+      Bucket: `${process.env.AWS_BUCKET}`,
       Key,
       ContentType,
     })
@@ -43,7 +43,7 @@ export async function uploadFile(
   try {
     const parts = [{ ETag: partUploadResponse.ETag, PartNumber: 1 }]
     upload = await s3.completeMultipartUpload({
-      Bucket: 'heihei-game-content',
+      Bucket: `${process.env.AWS_BUCKET}`,
       Key,
       UploadId: uploadId,
       MultipartUpload: {
