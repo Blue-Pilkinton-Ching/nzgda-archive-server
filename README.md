@@ -39,3 +39,4 @@ FIREBASE_ADMIN_CREDENTIAL = "{
 
 AWS_KEY = "AWS key"
 AWS_KEY_SECRET = "AWS key secret"
+API_BACKEND_URL = http://localhost:3002

@@ -8,16 +8,22 @@ import multer from 'multer'
 const app = express()
 const PORT = process.env.PORT || 3002
 
-// SSL certs files
-const privateKey = fs.readFileSync(
-  '/home/ubuntu/websites/ssl/server.key',
-  'utf8'
-)
-const certificate = fs.readFileSync(
-  '/home/ubuntu/websites/ssl/server.crt',
-  'utf8'
-)
-const credentials = { key: privateKey, cert: certificate }
+let credentials = null
+
+try {
+  // SSL certs files
+  const privateKey = fs.readFileSync(
+    '/home/ubuntu/websites/ssl/server.key',
+    'utf8'
+  )
+  const certificate = fs.readFileSync(
+    '/home/ubuntu/websites/ssl/server.crt',
+    'utf8'
+  )
+  credentials = { key: privateKey, cert: certificate }
+} catch (error) {
+  console.error('Error loading SSL certs')
+}
 
 app.use(
   cors({
@@ -59,7 +65,14 @@ app.get('/', (req: Request, res: Response) => {
 // })
 
 //start ssl server
-const httpsServer = https.createServer(credentials, app)
-httpsServer.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`)
-})
+
+if (credentials != null) {
+  const httpsServer = https.createServer(credentials, app)
+  httpsServer.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`)
+  })
+} else {
+  app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`)
+  })
+}
