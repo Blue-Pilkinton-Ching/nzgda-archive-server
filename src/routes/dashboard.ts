@@ -23,6 +23,7 @@ import {
 import AdmZip from 'adm-zip'
 
 import * as fs from 'fs'
+import path from 'path'
 
 export const dashboard = Router()
 dashboard.use(privilege)
@@ -437,6 +438,8 @@ dashboard.post(
 
       const id = latestID.id
 
+      console.log(`Adding ${id}...`)
+
       try {
         await Promise.all([
           (async () => {
@@ -540,6 +543,15 @@ dashboard.post(
           if (err) throw err
         })
       }
+
+      fs.readdir('uploads', (err, files) => {
+        if (err) throw err
+        for (const file of files) {
+          fs.unlink(path.join('uploads', file), (err) => {
+            if (err) throw err
+          })
+        }
+      })
     } else {
       statusCode = 401
     }

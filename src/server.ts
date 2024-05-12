@@ -31,24 +31,27 @@ app.use(
   })
 )
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'OPTIONS, GET, POST, PUT, PATCH, DELETE'
-  )
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200)
-  }
-  next()
-})
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*')
+//   res.setHeader(
+//     'Access-Control-Allow-Methods',
+//     'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+//   )
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+//   if (req.method === 'OPTIONS') {
+//     return res.sendStatus(200)
+//   }
+//   next()
+// })
 
 app.use(express.json())
 app.use(express.text())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true, limit: '500mb' }))
 
-const upload = multer({ dest: 'uploads/' })
+const upload = multer({
+  dest: 'uploads/',
+  limits: { fileSize: 500 * 1024 * 1024 },
+})
 
 export { upload as multer }
 
@@ -66,13 +69,13 @@ app.get('/', (req: Request, res: Response) => {
 
 //start ssl server
 
-if (credentials != null) {
-  const httpsServer = https.createServer(credentials, app)
-  httpsServer.listen(PORT, () => {
+if (credentials == null) {
+  app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`)
   })
 } else {
-  app.listen(PORT, () => {
+  const httpsServer = https.createServer(credentials, app)
+  httpsServer.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`)
   })
 }
