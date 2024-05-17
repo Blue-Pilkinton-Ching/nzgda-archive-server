@@ -507,9 +507,15 @@ dashboard.post(
               .set({
                 ...game,
                 id: id,
-                ...(files.game && {
-                  url: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/game/index.html`,
-                }),
+                ...(files.game
+                  ? {
+                      url: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/game/index.html`,
+                      isGameExternal: false,
+                    }
+                  : {
+                      url: game.url,
+                      isGameExternal: true,
+                    }),
                 thumbnail: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/thumbnail.png`,
                 ...(files.banner && {
                   screenshot: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/banner.png`,
@@ -593,9 +599,15 @@ dashboard.patch(
                 .get()
             ).docs[0].ref.update({
               ...gameChanges,
-              ...(files.game && {
-                url: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/game/index.html`,
-              }),
+              ...(files.game
+                ? {
+                    url: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/game/index.html`,
+                    isGameExternal: false,
+                  }
+                : {
+                    url: gameChanges.url,
+                    isGameExternal: true,
+                  }),
               ...(files.banner && {
                 screenshot: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/banner.png`,
               }),

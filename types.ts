@@ -13,7 +13,6 @@ export interface Game {
   uploadStatus: string
   iosLink?: string
   androidLink?: string
-  gamefrootLink?: string
   fileSize?: number
   exclude?: string
   width?: number
@@ -24,6 +23,7 @@ export interface Game {
   playableOnHeihei?: boolean
   displayAppBadge?: boolean
   educational: boolean
+  isGameExternal: boolean
 }
 
 export interface UserTypes {
