@@ -638,6 +638,10 @@ dashboard.patch(
             item.educational = gameChanges.educational
             item.playableOnHeihei = gameChanges.playableOnHeihei
 
+            if (files.thumbnail) {
+              item.thumbnail = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/thumbnail.png`
+            }
+
             if (files.banner) {
               item.banner = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/banner.png`
             }
