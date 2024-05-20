@@ -64,6 +64,8 @@ export interface GameListItem {
   educational?: boolean
   banner?: string
   approved?: boolean
+  sort?: number
+  timestamp?: number
 }
 
 export interface Partner {

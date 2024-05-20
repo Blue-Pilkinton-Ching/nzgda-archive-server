@@ -496,6 +496,8 @@ dashboard.post(
               }),
               educational: game.educational || false,
               approved: false,
+              sort: id * 100,
+              timestamp: Date.now(),
             })
 
             await admin.firestore().doc(`gameslist/BrHoO8yuD3JdDFo8F2BC`).set(d)
@@ -507,6 +509,7 @@ dashboard.post(
               .set({
                 ...game,
                 id: id,
+                createdAt: Date.now(),
                 ...(files.game
                   ? {
                       url: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/game/index.html`,
@@ -599,6 +602,7 @@ dashboard.patch(
                 .get()
             ).docs[0].ref.update({
               ...gameChanges,
+              updatedAt: Date.now(),
               ...(files.game
                 ? {
                     url: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/game/index.html`,
