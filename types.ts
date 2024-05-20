@@ -65,6 +65,7 @@ export interface GameListItem {
   banner?: string
   approved?: boolean
   sort?: number
+  playableOnHeihei?: boolean
   timestamp?: number
 }
 

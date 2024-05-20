@@ -498,6 +498,7 @@ dashboard.post(
               approved: false,
               sort: id * 100,
               timestamp: Date.now(),
+              playableOnHeihei: game.playableOnHeihei,
             })
 
             await admin.firestore().doc(`gameslist/BrHoO8yuD3JdDFo8F2BC`).set(d)
@@ -635,6 +636,7 @@ dashboard.patch(
             item.exclude = gameChanges.exclude
             item.app = gameChanges.displayAppBadge
             item.educational = gameChanges.educational
+            item.playableOnHeihei = gameChanges.playableOnHeihei
 
             if (files.banner) {
               item.banner = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${req.params.gameID}/banner.png`
