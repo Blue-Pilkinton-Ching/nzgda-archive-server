@@ -42,15 +42,20 @@ const upload = multer({
 
 export { upload as multer }
 
-import { dashboard } from './routes/dashboard'
-
-app.use('/dashboard', dashboard)
+import { admins } from './routes/admins'
+import { games } from './routes/games'
+import { game } from './routes/game'
+import { requests } from './routes/requests'
+import { studios } from './routes/studios'
+app.use('/admins', admins)
+app.use('/games', games)
+app.use('/game', game)
+app.use('/requests', requests)
+app.use('/studios', studios)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Heihei website api backend!')
 })
-
-//start ssl server
 
 if (credentials == null) {
   app.listen(PORT, () => {
