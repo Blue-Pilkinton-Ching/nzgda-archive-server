@@ -54,7 +54,7 @@ app.use('/requests', requests)
 app.use('/studios', studios)
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Heihei website api backend!')
+  res.send('NZGDA website backend!')
 })
 
 if (credentials == null) {
