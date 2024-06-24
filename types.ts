@@ -3,54 +3,32 @@ export interface Game {
   name: string
   description: string
   thumbnail: string
-  screenshot?: string
+  banner?: string
   approved: number
-  partner: string
+  studio: Studio
   url?: string
-  userId: number
-  type: string
-  tags?: string
-  uploadStatus: string
-  iosLink?: string
-  androidLink?: string
-  fileSize?: number
-  exclude?: string
+  tags: string
+  exclude: string
   width?: number
   height?: number
-  orientation?: string
-  createdAt?: string
-  updatedAt?: string
-  playableOnHeihei?: boolean
-  displayAppBadge?: boolean
+  createdAt: string
+  updatedAt: string
+  isApp: boolean
   educational: boolean
-  isGameExternal: boolean
-}
-
-export interface UserTypes {
-  admins: User[]
-  privileged: User[]
+  playableOnHeihei?: boolean
+  sort: number
 }
 
 export interface AdminDashboard {
-  users: UserTypes
   partners: Partner[]
   gameslist: GameListItem[]
   authRequests: User[]
 }
 
 export interface User {
-  partner?: string
-  email: string
+  studio: string
   uid: string
 }
-
-export type UserPrivilege =
-  | 'missing'
-  | 'invalid'
-  | 'error'
-  | 'noprivilege'
-  | 'admin'
-  | 'privileged'
 
 export interface GameListItem {
   id: number
@@ -82,4 +60,16 @@ export interface GamesList {
 export interface s3Object {
   Key: string
   filepath: string
+}
+
+export type UserPrivilege =
+  | 'missing'
+  | 'invalid'
+  | 'error'
+  | 'noprivilege'
+  | 'admin'
+
+export interface Studio {
+  id: number
+  name: string
 }
