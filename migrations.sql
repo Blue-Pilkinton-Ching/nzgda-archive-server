@@ -14,12 +14,19 @@ CREATE TABLE games (
     height INT NULL,
     display_app_badge BOOLEAN NOT NULL,
     studio VARCHAR(511),
-    sort INT NOT NULL
+    sort INT NOT NULL,
+    hidden BOOLEAN NOT NULL
 );
 
 CREATE TABLE admins (
     uid VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    studio INT,
-    PRIMARY KEY (uid) NOT NULL
+    studio INT NOT NULL,
+    PRIMARY KEY (uid)
+);
+
+CREATE TABLE requests (
+    UID VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    PRIMARY KEY (UID)
 );

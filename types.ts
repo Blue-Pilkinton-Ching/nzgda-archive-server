@@ -4,7 +4,7 @@ export interface Game {
   description: string
   thumbnail: string
   banner?: string
-  approved: number
+  approved: boolean
   studio: Studio
   url?: string
   tags: string
@@ -16,6 +16,7 @@ export interface Game {
   isApp: boolean
   educational: boolean
   playableOnHeihei?: boolean
+  hidden: boolean
   sort: number
 }
 
@@ -26,6 +27,7 @@ export interface AdminDashboard {
 }
 
 export interface User {
+  email: string
   studio: string
   uid: string
 }

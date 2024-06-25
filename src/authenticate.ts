@@ -37,7 +37,6 @@ export default async function privilege(
           req.headers['studio'] = results[0].studio
           next()
         } else {
-          console.log('No admin found with the UID:', credential.uid)
           req.headers['privilege'] = 'noprivilege'
           next()
         }
