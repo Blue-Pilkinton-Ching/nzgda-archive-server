@@ -47,11 +47,13 @@ import { games } from './routes/games'
 import { game } from './routes/game'
 import { requests } from './routes/requests'
 import { studios } from './routes/studios'
+import { dashboard } from './routes/dashboard'
 app.use('/admins', admins)
 app.use('/games', games)
 app.use('/game', game)
 app.use('/requests', requests)
 app.use('/studios', studios)
+app.use('/dashboard', dashboard)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('NZGDA website backend!')

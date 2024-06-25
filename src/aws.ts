@@ -17,6 +17,7 @@ const connectionConfig = {
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
   port: 3306,
+  multipleStatements: true,
 }
 
 const connection = mysql.createConnection(connectionConfig)

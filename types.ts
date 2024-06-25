@@ -20,13 +20,14 @@ export interface Game {
   sort: number
 }
 
-export interface AdminDashboard {
-  partners: Partner[]
-  gameslist: GameListItem[]
-  authRequests: User[]
+export interface DashboardData {
+  games: Game[]
+  admins: Admin[]
+  requests: Admin[]
+  studios: Studio[]
 }
 
-export interface User {
+export interface Admin {
   email: string
   studio: string
   uid: string
