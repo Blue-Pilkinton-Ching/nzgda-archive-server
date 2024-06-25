@@ -38,7 +38,6 @@ dashboard.get(`/`, async (req, res) => {
           requests: results[2],
           studios: results[3],
         }
-        console.log(dashboardData)
 
         res.json(dashboardData)
       }

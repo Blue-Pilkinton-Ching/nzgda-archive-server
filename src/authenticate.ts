@@ -20,7 +20,7 @@ export default async function privilege(
         .auth()
         .verifyIdToken(req.headers.authorization.split('Bearer ')[1])
     } catch (error) {
-      res.status(401).send('Invalid token').setHeader('privilege', 'error')
+      res.status(401).send('Invalid token')
       return
     }
 
@@ -35,6 +35,7 @@ export default async function privilege(
         if (results.length > 0) {
           req.headers['privilege'] = 'admin'
           req.headers['studio'] = results[0].studio
+          res.setHeader('studio', results[0].studio)
           next()
         } else {
           req.headers['privilege'] = 'noprivilege'

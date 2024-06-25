@@ -3,23 +3,23 @@ export interface Game {
   name: string
   description: string
   thumbnail: string
-  banner?: string
+  banner: string | null
   approved: boolean
-  studio: Studio
-  url?: string
+  studio_id: number
+  url: string | null
   tags: string
   exclude: string
-  width?: number
-  height?: number
-  createdAt: string
-  updatedAt: string
+  width: number | null
+  height: number | null
+  created_at: string
+  updated_at: string
   isApp: boolean
   educational: boolean
-  playableOnHeihei?: boolean
-  hidden: boolean
+  playableOnHeihei: boolean
   sort: number
+  hidden: boolean
+  featured: boolean
 }
-
 export interface DashboardData {
   games: Game[]
   admins: Admin[]

@@ -24,3 +24,18 @@ admins.get(`/:uid`, async (req, res) => {
     res.status(401).send('Unauthorized')
   }
 })
+
+admins.get('/', async (req, res) => {
+  const privilege = req.headers['privilege'] as UserPrivilege
+  if (privilege == 'admin') {
+    connection.query(`SELECT * FROM admins`, (err, results) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+      res.json(results)
+    })
+  } else {
+    res.status(401).send('Unauthorized')
+  }
+})
