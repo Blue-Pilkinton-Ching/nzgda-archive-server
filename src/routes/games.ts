@@ -3,16 +3,17 @@ import privilege from '../authenticate'
 import { connection } from '../aws'
 
 export const games = Router()
-games.use(privilege)
 
-games.get('/all/public', (req, res) => {
-  connection.query(`SELECT * FROM games`, (err, results) => {
-    if (err) {
-      console.error(err)
-      res.status(500).send('Internal Server error')
-
-      return
+games.get('/', (req, res) => {
+  connection.query(
+    `SELECT * FROM games WHERE hidden = false`,
+    (err, results) => {
+      if (err) {
+        console.error(err)
+        res.status(500).send('Internal Server error')
+        return
+      }
+      res.json(results)
     }
-    res.json(results)
-  })
+  )
 })
