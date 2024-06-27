@@ -6,6 +6,21 @@ import { connection } from '../aws'
 export const game = Router()
 game.use(privilege)
 
+game.get('/:gameID', async (req, res) => {
+  connection.query(
+    `SELECT * FROM games WHERE id = ? LIMIT 1`,
+    [Number(req.params.gameID)],
+    (err, results) => {
+      if (err) {
+        console.error(err)
+        res.status(500).send('Internal Server Error')
+        return
+      }
+      res.send(results.length > 0 ? results[0] : {})
+    }
+  )
+})
+
 game.post('/', async (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
   const studio = req.headers['studio'] as UserPrivilege
