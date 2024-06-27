@@ -9,6 +9,8 @@ games.get('/all/public', (req, res) => {
   connection.query(`SELECT * FROM games`, (err, results) => {
     if (err) {
       console.error(err)
+      res.status(500).send('Internal Server error')
+
       return
     }
     res.json(results)

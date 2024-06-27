@@ -8,14 +8,12 @@ export interface Game {
   studio_id: number
   url: string | null
   tags: string
-  exclude: string
   width: number | null
   height: number | null
   created_at: string
   updated_at: string
   isApp: boolean
   educational: boolean
-  playableOnHeihei: boolean
   sort: number
   hidden: boolean
   featured: boolean
@@ -46,7 +44,7 @@ export interface GameListItem {
   banner?: string
   approved?: boolean
   sort?: number
-  playableOnHeihei?: boolean
+
   timestamp?: number
 }
 

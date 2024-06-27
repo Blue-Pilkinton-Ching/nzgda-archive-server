@@ -2,20 +2,20 @@ CREATE TABLE games (
     id INT AUTO_INCREMENT PRIMARY KEY,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     date_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    description TEXT,
-    thumbnail VARCHAR(255) NULL,
+    description TEXT NOT NULL,
+    name TEXT NOT NULL,
+    thumbnail VARCHAR(255) NULL ,
     banner VARCHAR(255) NULL,
     url VARCHAR(511) NULL,
     approved BOOLEAN NOT NULL,
     featured BOOLEAN NOT NULL,
     educational BOOLEAN NOT NULL,
     tags VARCHAR(255),
-    exclude VARCHAR(255),
     width INT NULL,
     height INT NULL,
-    display_app_badge BOOLEAN NOT NULL,
-    studio VARCHAR(511),
-    sort INT NOT NULL,
+    isApp BOOLEAN NOT NULL,
+    studio_id INT NOT NULL,
+    sort INT,
     hidden BOOLEAN NOT NULL
 );
 
@@ -36,3 +36,14 @@ CREATE TABLE studios (
   id INT NOT NULL PRIMARY KEY,
   name VARCHAR(255) NOT NULL
 );
+
+DELIMITER $$
+
+CREATE TRIGGER set_sort_value
+AFTER INSERT ON games
+FOR EACH ROW
+BEGIN
+    UPDATE games SET sort = NEW.id * 100 WHERE id = NEW.id;
+END$$
+
+DELIMITER ;

@@ -15,6 +15,8 @@ admins.get(`/:uid`, async (req, res) => {
       (err, results) => {
         if (err) {
           console.error(err)
+          res.status(500).send('Internal Server error')
+
           return
         }
         res.json(results)
@@ -31,6 +33,8 @@ admins.get('/', async (req, res) => {
     connection.query(`SELECT * FROM admins`, (err, results) => {
       if (err) {
         console.error(err)
+        res.status(500).send('Internal Server error')
+
         return
       }
       res.json(results)

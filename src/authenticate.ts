@@ -36,6 +36,7 @@ export default async function privilege(
           req.headers['privilege'] = 'admin'
           req.headers['studio'] = results[0].studio
           res.setHeader('studio', results[0].studio)
+          res.setHeader('privilege', 'admin')
           next()
         } else {
           req.headers['privilege'] = 'noprivilege'
