@@ -43,3 +43,25 @@ admins.get('/', async (req, res) => {
     res.status(401).send('Unauthorized')
   }
 })
+
+admins.delete(`/`, async (req, res) => {
+  const privilege = req.headers['privilege'] as UserPrivilege
+  const studio = req.headers['studio'] as UserPrivilege
+  if (privilege == 'admin' && Number(studio) === 0) {
+    connection.query(
+      `DELETE FROM admins WHERE uid = ?`,
+      [req.body.uid],
+      (err) => {
+        if (err) {
+          console.error(err)
+          res.status(500).send('Internal Server error')
+
+          return
+        }
+        res.send('Success')
+      }
+    )
+  } else {
+    res.status(401).send('Unauthorized')
+  }
+})
