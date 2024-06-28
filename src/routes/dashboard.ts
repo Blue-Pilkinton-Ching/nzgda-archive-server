@@ -12,7 +12,7 @@ dashboard.get(`/`, async (req, res) => {
   if (privilege == 'admin') {
     let query = ''
 
-    if (studio === '0') {
+    if (Number(studio) === 0) {
       query = `SELECT * FROM games;
       SELECT * FROM admins;
       SELECT * FROM requests;

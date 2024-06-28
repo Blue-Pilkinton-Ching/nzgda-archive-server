@@ -23,7 +23,7 @@ game.get('/:gameID', async (req, res) => {
 
 game.post('/', async (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
-  const studio = req.headers['studio'] as UserPrivilege
+  const studio = req.headers['studio'] as string
 
   if (privilege == 'admin') {
     const data = req.body
