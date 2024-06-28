@@ -27,7 +27,7 @@ CREATE TABLE admins (
 );
 
 CREATE TABLE requests (
-    UID VARCHAR(255) NOT NULL,
+    uid VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     PRIMARY KEY (UID)
 );

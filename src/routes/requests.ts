@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import privilege from '../authenticate'
-import { Studio, UserPrivilege } from '../../types'
+import { UserPrivilege } from '../../types'
 import { connection } from '../aws'
 
 export const requests = Router()
@@ -13,7 +13,7 @@ requests.post('/', (req, res) => {
     const { uid, email } = req.body
 
     connection.query(
-      'SELECT UID FROM requests WHERE UID = ?',
+      'SELECT uid FROM requests WHERE uid = ?',
       [uid],
       (err, results) => {
         if (err) {
@@ -22,7 +22,7 @@ requests.post('/', (req, res) => {
         }
 
         if (results.length === 0) {
-          const insertQuery = 'INSERT INTO requests (UID, email) VALUES (?, ?)'
+          const insertQuery = 'INSERT INTO requests (uid, email) VALUES (?, ?)'
           connection.query(insertQuery, [uid, email], (insertErr) => {
             if (insertErr) {
               console.error(insertErr)
@@ -38,14 +38,15 @@ requests.post('/', (req, res) => {
 
   res.send('Request added')
 })
+
 requests.patch('/', (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
   const studio = req.headers['studio'] as string
 
   if (privilege === 'admin' && Number(studio) === 0) {
     connection.query(
-      'DELETE FROM requests WHERE UID = ?',
-      req.body.UID,
+      'DELETE FROM requests WHERE uid = ?',
+      req.body.uid,
       (err) => {
         if (err) {
           console.error(err)
@@ -53,7 +54,7 @@ requests.patch('/', (req, res) => {
         }
         connection.query(
           'INSERT INTO admins (uid, email, studio) VALUES (?, ?, ?)',
-          [req.body.UID, req.body.email, req.body.studio],
+          [req.body.uid, req.body.email, req.body.studio],
           (insertErr) => {
             if (insertErr) {
               console.error(insertErr)
@@ -62,6 +63,29 @@ requests.patch('/', (req, res) => {
             res.send('Request updated')
           }
         )
+      }
+    )
+  } else {
+    res.status(401).send('Unauthorized')
+  }
+})
+
+requests.delete('/', (req, res) => {
+  const privilege = req.headers['privilege'] as UserPrivilege
+  const studio = req.headers['studio'] as string
+
+  console.log(req.body)
+
+  if (privilege === 'admin' && Number(studio) === 0) {
+    connection.query(
+      'DELETE FROM requests WHERE uid = ?',
+      req.body.uid,
+      (err) => {
+        if (err) {
+          console.error(err)
+          return res.status(500).send('Internal server error')
+        }
+        res.send('Request deleted')
       }
     )
   } else {
