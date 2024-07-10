@@ -88,3 +88,23 @@ game.patch('/:gameID', async (req, res) => {
     res.status(401).send('Unauthorized')
   }
 })
+
+game.delete('/:gameID', async (req, res) => {
+  const privilege = req.headers['privilege'] as UserPrivilege
+  if (privilege === 'admin') {
+    connection.query(
+      'DELETE FROM games WHERE id = ?',
+      [req.params.gameID],
+      (err) => {
+        if (err) {
+          console.error(err)
+          res.status(500).send('Internal Server error')
+          return
+        }
+        res.send('Game deleted')
+      }
+    )
+  } else {
+    res.status(401).send('Unauthorized')
+  }
+})
