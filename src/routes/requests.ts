@@ -29,6 +29,8 @@ requests.post('/', (req, res) => {
               return res.status(500).send('Internal server error')
             }
           })
+        } else {
+          res.status(422).send('Request already exists')
         }
       }
     )
@@ -73,8 +75,6 @@ requests.patch('/', (req, res) => {
 requests.delete('/', (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
   const studio = req.headers['studio'] as string
-
-  console.log(req.body)
 
   if (privilege === 'admin' && Number(studio) === 0) {
     connection.query(
