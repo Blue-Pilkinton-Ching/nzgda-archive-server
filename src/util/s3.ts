@@ -1,4 +1,4 @@
-import s3 from '../aws'
+import { s3 } from '../aws'
 import path from 'path'
 import fs from 'fs'
 import { ListObjectsV2Command } from '@aws-sdk/client-s3'
