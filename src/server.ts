@@ -31,13 +31,13 @@ app.use(
   })
 )
 
-app.use(express.json({ limit: '500mb' }))
-app.use(express.text({ limit: '500mb' }))
-app.use(express.urlencoded({ extended: true, limit: '500mb' }))
+app.use(express.json({ limit: '10mb' }))
+app.use(express.text({ limit: '10mb' }))
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 const upload = multer({
   dest: 'uploads/',
-  limits: { fileSize: 500 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
 })
 
 export { upload as multer }
