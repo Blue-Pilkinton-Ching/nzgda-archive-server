@@ -51,7 +51,7 @@ game.post(
       const game: any = {
         name: data.name,
         description: data.description,
-        studio_id: Number(studio),
+        studio_id: data.studio_id === -1 ? studio : data.studio_id,
         thumbnail: null,
         banner: null,
         approved: false,
@@ -157,10 +157,14 @@ game.patch(
   ]),
   async (req, res) => {
     const privilege = req.headers['privilege'] as UserPrivilege
+    const studio = req.headers['studio'] as string
+
     const gameID = req.params.gameID
 
     if (privilege === 'admin') {
       const data = req.body
+
+      data.studio_id = data.studio_id === -1 ? studio : data.studio_id
 
       if (!gameID) {
         res.status(400).send('Missing game ID')

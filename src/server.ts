@@ -28,6 +28,7 @@ try {
 app.use(
   cors({
     exposedHeaders: ['privilege', 'studio'],
+    origin: '*',
   })
 )
 
