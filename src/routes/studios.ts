@@ -12,6 +12,7 @@ studios.get('/', (req, res) => {
       console.error(error)
       return res.status(500).send('Internal server error')
     }
+
     res.send(results)
   })
 })
