@@ -17,6 +17,20 @@ studios.get('/', (req, res) => {
   })
 })
 
+studios.get('/:id', (req, res) => {
+  connection.query(
+    'SELECT * FROM studios WHERE id = ? LIMIT 1',
+    (error, results) => {
+      if (error) {
+        console.error(error)
+        return res.status(500).send('Internal server error')
+      }
+
+      res.send(results)
+    }
+  )
+})
+
 studios.post('/', (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
   const studio = req.headers['studio'] as string
