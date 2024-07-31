@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import e, { Router } from 'express'
 import privilege from '../authenticate'
 import { Game, UserPrivilege } from '../../types'
 import { connection } from '../aws'
@@ -60,9 +60,9 @@ game.post(
         height: data.height || 0,
         width: data.width || 0,
         hidden: false,
-        isApp: false,
+        isApp: data.isApp,
         sort: null as any as number,
-        tags: '',
+        tags: data.tags,
         url: data.url || null,
       }
 
@@ -164,7 +164,15 @@ game.patch(
     if (privilege === 'admin') {
       const data = req.body
 
-      data.studio_id = data.studio_id === -1 ? studio : data.studio_id
+      if (data.studio_id) {
+        data.studio_id =
+          String(studio) === '0' ? data.studio_id : Number(studio)
+      } else {
+        if (String(studio) === '0') {
+        } else {
+          data.studio_id = Number(studio)
+        }
+      }
 
       if (!gameID) {
         res.status(400).send('Missing game ID')
