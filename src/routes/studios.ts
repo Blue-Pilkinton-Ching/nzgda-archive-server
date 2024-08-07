@@ -20,13 +20,14 @@ studios.get('/', (req, res) => {
 studios.get('/:id', (req, res) => {
   connection.query(
     'SELECT * FROM studios WHERE id = ? LIMIT 1',
+    [req.params.id],
     (error, results) => {
-      if (error) {
+      if (results && results.length > 0) {
+        res.send(results[0])
+      } else {
         console.error(error)
         return res.status(500).send('Internal server error')
       }
-
-      res.send(results)
     }
   )
 })
