@@ -36,8 +36,15 @@ studios.post('/', (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
   const studio = req.headers['studio'] as string
 
+  const s = req.body.studio
+
+  const data = {
+    name: s.name,
+    description: s.description,
+  }
+
   if (privilege === 'admin' && Number(studio) === 0) {
-    connection.query(`INSERT INTO studios SET ?`, req.body, (err) => {
+    connection.query(`INSERT INTO studios SET ?`, data, (err) => {
       if (err) {
         console.error(err)
         return res.status(500).send('Internal server error')
