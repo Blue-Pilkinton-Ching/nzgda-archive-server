@@ -64,6 +64,11 @@ game.post(
         sort: null as any as number,
         tags: data.tags,
         url: data.url || null,
+        yearOfRelease: data.yearOfRelease,
+        iosLink: data.iosLink || '',
+        androidLink: data.androidLink || '',
+        steamLink: data.steamLink || '',
+        websiteLink: data.websiteLink || '',
       }
 
       connection.query(`INSERT INTO games SET ?`, game, async (err, result) => {

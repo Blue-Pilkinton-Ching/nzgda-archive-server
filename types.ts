@@ -17,6 +17,11 @@ export interface Game {
   sort: number
   hidden: boolean
   featured: boolean
+  yearOfRelease: number
+  iosLink?: string
+  androidLink?: string
+  steamLink?: string
+  websiteLink?: string
 }
 export interface DashboardData {
   games: Game[]
