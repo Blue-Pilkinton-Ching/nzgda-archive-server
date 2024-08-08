@@ -41,6 +41,10 @@ studios.post('/', (req, res) => {
   const data = {
     name: s.name,
     description: s.description,
+    website: s.website,
+    steam: s.steam,
+    ios: s.ios,
+    android: s.android,
   }
 
   if (privilege === 'admin' && Number(studio) === 0) {
