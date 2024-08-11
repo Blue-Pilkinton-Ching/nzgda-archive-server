@@ -22,6 +22,7 @@ export interface Game {
   androidLink?: string
   steamLink?: string
   websiteLink?: string
+  otherLinks?: string
 }
 export interface DashboardData {
   games: Game[]

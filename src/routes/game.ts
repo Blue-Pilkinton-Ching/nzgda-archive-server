@@ -1,6 +1,6 @@
-import e, { Router } from 'express'
+import { Router } from 'express'
 import privilege from '../authenticate'
-import { Game, UserPrivilege } from '../../types'
+import { UserPrivilege } from '../../types'
 import { connection } from '../aws'
 import { multer } from '../server'
 import { uploadFile } from '../util/s3'
@@ -69,6 +69,7 @@ game.post(
         androidLink: data.androidLink || '',
         steamLink: data.steamLink || '',
         websiteLink: data.websiteLink || '',
+        otherLinks: data.otherLinks || '',
       }
 
       connection.query(`INSERT INTO games SET ?`, game, async (err, result) => {
