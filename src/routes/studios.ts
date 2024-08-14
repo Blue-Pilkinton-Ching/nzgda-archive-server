@@ -36,16 +36,7 @@ studios.post('/', (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
   const studio = req.headers['studio'] as string
 
-  const s = req.body.studio
-
-  const data = {
-    name: s.name,
-    description: s.description,
-    website: s.website,
-    steam: s.steam,
-    ios: s.ios,
-    android: s.android,
-  }
+  const data = req.body.studio
 
   if (privilege === 'admin' && Number(studio) === 0) {
     connection.query(`INSERT INTO studios SET ?`, data, (err) => {
