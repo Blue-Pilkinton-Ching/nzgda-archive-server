@@ -170,6 +170,25 @@ game.patch(
     if (privilege === 'admin') {
       const data = req.body
 
+      let files: {
+        thumbnail?: Express.Multer.File[]
+        banner?: Express.Multer.File[]
+      } = {}
+
+      if (
+        req.files &&
+        typeof req.files === 'object' &&
+        !Array.isArray(req.files)
+      ) {
+        if ('thumbnail' in req.files) {
+          files.thumbnail = req.files['thumbnail']
+        }
+
+        if ('banner' in req.files) {
+          files.banner = req.files['banner']
+        }
+      }
+
       if (data.studio_id) {
         data.studio_id =
           String(studio) === '0' ? data.studio_id : Number(studio)
@@ -185,18 +204,79 @@ game.patch(
         return
       }
 
+      try {
+        await Promise.all([
+          (async () => {
+            if (files.thumbnail) {
+              await uploadFile(
+                `${process.env.AWS_BUCKET}`,
+                `${gameID}/thumbnail.png`,
+                files.thumbnail[0].path
+              )
+            }
+          })(),
+
+          (async () => {
+            if (files.banner) {
+              await uploadFile(
+                `${process.env.AWS_BUCKET}`,
+                `${gameID}/banner.png`,
+                files.banner[0].path
+              )
+            }
+          })(),
+        ])
+      } catch (error) {
+        console.error(error)
+        res.status(500).send('Internal Server error')
+        return
+      }
+
+      if (files.thumbnail) {
+        data.thumbnail = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${gameID}/thumbnail.png`
+      }
+
+      if (files.banner) {
+        data.banner = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${gameID}/banner.png`
+      }
+
+      console.log(data, gameID)
+
       connection.query(
-        'UPDATE games SET ? WHERE id = ?',
+        `UPDATE games SET ? WHERE id = ?`,
         [data, gameID],
         (err) => {
           if (err) {
             console.error(err)
             res.status(500).send('Internal Server error')
+
             return
           }
-          res.send('Game updated')
         }
       )
+
+      if (files.thumbnail) {
+        fs.unlink(files.thumbnail[0].path, (err) => {
+          if (err) throw err
+        })
+      }
+
+      if (files.banner) {
+        fs.unlink(files.banner[0].path, (err) => {
+          if (err) throw err
+        })
+      }
+
+      fs.readdir('uploads', (err, files) => {
+        if (err) throw err
+        for (const file of files) {
+          fs.unlink(path.join('uploads', file), (err) => {
+            if (err) throw err
+          })
+        }
+      })
+
+      res.send('Game updated')
     } else {
       res.status(401).send('Unauthorized')
     }
