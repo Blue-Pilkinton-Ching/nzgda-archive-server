@@ -168,7 +168,7 @@ game.patch(
     const gameID = req.params.gameID
 
     if (privilege === 'admin') {
-      const data = req.body
+      const data = await JSON.parse(req.body.data)
 
       let files: {
         thumbnail?: Express.Multer.File[]
@@ -239,8 +239,6 @@ game.patch(
       if (files.banner) {
         data.banner = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${gameID}/banner.png`
       }
-
-      console.log(data, gameID)
 
       connection.query(
         `UPDATE games SET ? WHERE id = ?`,
