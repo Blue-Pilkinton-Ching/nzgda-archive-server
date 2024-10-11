@@ -6,6 +6,31 @@ import { connection } from '../aws'
 export const requests = Router()
 requests.use(privilege)
 
+requests.get('/:uid', async (req, res) => {
+  const privilege = req.headers['privilege'] as UserPrivilege
+
+  if (privilege === 'noprivilege') {
+    connection.query(
+      'SELECT uid FROM requests WHERE uid = ?',
+      [req.params.uid],
+      (err, results) => {
+        if (err) {
+          console.error(err)
+          return res.status(500).send('Internal server error')
+        }
+
+        if (results.length === 0) {
+          res.json({ pending: false })
+        } else {
+          res.json({ pending: true })
+        }
+      }
+    )
+  } else {
+    res.status(401).send('Unauthorized')
+  }
+})
+
 requests.post('/', (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
 
@@ -30,7 +55,7 @@ requests.post('/', (req, res) => {
             }
           })
         } else {
-          res.status(422).send('Request already exists')
+          res.status(422)
         }
       }
     )
