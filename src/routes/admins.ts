@@ -8,11 +8,16 @@ admins.use(privilege)
 
 admins.get(`/:uid`, async (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
+  console.log('UID: ', req.params.uid)
+  console.log('Privilege: ', privilege)
   if (privilege == 'admin') {
     connection.query(
       `SELECT * FROM admins WHERE uid = ?`,
       [req.params.uid],
       (err, results) => {
+        console.log('err: ', err)
+        console.log('results: ', results)
+
         if (err) {
           console.error(err)
           res.status(500).send('Internal Server error')
