@@ -8,7 +8,7 @@ export default async function privilege(
   res: Response,
   next: () => void
 ) {
-  console.log(req.headers.authorization)
+  console.log('Auth header:', req.headers.authorization)
 
   if (req.headers.authorization == undefined) {
     req.headers['privilege'] = 'noprivilege'
