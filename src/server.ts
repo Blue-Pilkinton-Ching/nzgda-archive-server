@@ -27,7 +27,10 @@ try {
 
 app.use(
   cors({
-    exposedHeaders: ['privilege', 'studio'],
+    exposedHeaders: ['privilege', 'studio', 'Authorization', 'authorization'],
+    allowedHeaders: ['privilege', 'studio', 'Authorization', 'authorization'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     origin: '*',
   })
 )
