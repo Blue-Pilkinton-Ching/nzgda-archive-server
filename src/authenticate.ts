@@ -8,6 +8,8 @@ export default async function privilege(
   res: Response,
   next: () => void
 ) {
+  console.log(req.headers.authorization)
+
   if (req.headers.authorization == undefined) {
     req.headers['privilege'] = 'noprivilege'
     next()
@@ -20,6 +22,7 @@ export default async function privilege(
         .auth()
         .verifyIdToken(req.headers.authorization.split('Bearer ')[1])
     } catch (error) {
+      console.log('User had invalid token')
       res.status(401).send('Invalid token')
       return
     }
@@ -29,10 +32,12 @@ export default async function privilege(
       [credential.uid],
       (error, results) => {
         if (error) {
-          console.error(error)
+          console.error('Error fetching user:', error)
           return res.status(500).send('Internal server error')
         }
         if (results.length > 0) {
+          console.log('Authenticated User:', results)
+
           req.headers['privilege'] = 'admin'
           req.headers['studio'] = results[0].studio
           res.setHeader('studio', results[0].studio)
