@@ -6,4 +6,4 @@ import './src/server'
 import './src/firebase'
 import './src/aws'
 
-console.log('Initialized Heihei Backend Server!')
+console.log('Initialized NZGDA Archive Server!')
