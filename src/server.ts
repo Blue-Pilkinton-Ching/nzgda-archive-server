@@ -30,7 +30,7 @@ app.use(
     exposedHeaders: ['privilege', 'studio', 'Authorization', 'authorization'],
     allowedHeaders: ['privilege', 'studio', 'Authorization', 'authorization'],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     origin: '*',
   })
 )
