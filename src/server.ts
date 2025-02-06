@@ -27,11 +27,11 @@ try {
 
 app.use(
   cors({
-    exposedHeaders: ['privilege', 'studio', 'Authorization', 'authorization'],
-    allowedHeaders: ['privilege', 'studio', 'Authorization', 'authorization'],
+    exposedHeaders: ['privilege', 'studio'],
+    allowedHeaders: '*',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    origin: '*',
+    origin: 'https://games.nzgda.com',
   })
 )
 
