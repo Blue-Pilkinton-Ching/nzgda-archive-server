@@ -8,8 +8,6 @@ export default async function privilege(
   res: Response,
   next: () => void
 ) {
-  console.log('Auth header:', req.headers.authorization)
-
   if (req.headers.authorization == undefined) {
     req.headers['privilege'] = 'noprivilege'
     next()
@@ -36,8 +34,6 @@ export default async function privilege(
           return res.status(500).send('Internal server error')
         }
         if (results.length > 0) {
-          console.log('Authenticated User:', results)
-
           req.headers['privilege'] = 'admin'
           req.headers['studio'] = results[0].studio
           res.setHeader('studio', results[0].studio)
