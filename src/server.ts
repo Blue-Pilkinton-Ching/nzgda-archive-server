@@ -31,7 +31,7 @@ app.use(
     allowedHeaders: '*',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    origin: 'https://games.nzgda.com',
+    origin: ['https://games.nzgda.com', 'http://localhost:3001'],
   })
 )
 

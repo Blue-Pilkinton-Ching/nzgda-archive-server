@@ -8,8 +8,6 @@ admins.use(privilege)
 
 admins.get(`/:uid`, async (req, res) => {
   const privilege = req.headers['privilege'] as UserPrivilege
-  console.log('UID: ', req.params.uid)
-  console.log('Privilege: ', privilege)
   if (privilege == 'admin') {
     connection.query(
       `SELECT * FROM admins WHERE uid = ?`,
@@ -55,6 +53,28 @@ admins.delete(`/`, async (req, res) => {
   if (privilege == 'admin' && Number(studio) === 0) {
     connection.query(
       `DELETE FROM admins WHERE uid = ?`,
+      [req.body.uid],
+      (err) => {
+        if (err) {
+          console.error(err)
+          res.status(500).send('Internal Server error')
+
+          return
+        }
+        res.send('Success')
+      }
+    )
+  } else {
+    res.status(401).send('Unauthorized')
+  }
+})
+
+admins.patch(`/`, async (req, res) => {
+  const privilege = req.headers['privilege'] as UserPrivilege
+  const studio = req.headers['studio'] as UserPrivilege
+  if (privilege == 'admin' && Number(studio) === 0) {
+    connection.query(
+      `UPDATE admins SET studio = 0 WHERE uid = ?`,
       [req.body.uid],
       (err) => {
         if (err) {
