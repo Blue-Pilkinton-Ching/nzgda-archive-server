@@ -11,12 +11,15 @@ const s3 = new S3({
   },
 })
 
-const connectionConfig = {
+const connectionConfig: mysql.ConnectionConfig = {
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
-  port: 3306,
+  port: 25060,
+  ssl: {
+    rejectUnauthorized: false,
+  },
   multipleStatements: true,
 }
 
@@ -25,10 +28,10 @@ const connection = mysql.createConnection(connectionConfig)
 // connect.
 connection.connect((err: { stack: string }) => {
   if (err) {
-    console.error('Error connecting to MySQL RDS: ' + err.stack)
+    console.error('Error connecting to MySQL: ' + err.stack)
     return
   }
-  console.log('Connected to MySQL RDS as ID ' + connection.threadId)
+  console.log('Connected to MySQL as ID ' + connection.threadId)
 })
 
 export { s3, connection }
