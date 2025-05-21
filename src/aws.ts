@@ -17,9 +17,6 @@ const connectionConfig: mysql.ConnectionConfig = {
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
   port: 25060,
-  ssl: {
-    rejectUnauthorized: false,
-  },
   multipleStatements: true,
 }
 
