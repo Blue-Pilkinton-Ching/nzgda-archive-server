@@ -2,6 +2,7 @@ import { Router } from 'express'
 import privilege from '../authenticate'
 import { UserPrivilege } from '../../types'
 import { connection } from '../aws'
+import type { QueryError, RowDataPacket } from 'mysql2'
 
 export const requests = Router()
 requests.use(privilege)
@@ -13,7 +14,7 @@ requests.get('/:uid', async (req, res) => {
     connection.query(
       'SELECT uid FROM requests WHERE uid = ?',
       [req.params.uid],
-      (err, results) => {
+      (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
           console.error(err)
           return res.status(500).send('Internal server error')
@@ -40,7 +41,7 @@ requests.post('/', (req, res) => {
     connection.query(
       'SELECT uid FROM requests WHERE uid = ?',
       [uid],
-      (err, results) => {
+      (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
           console.error(err)
           return res.status(500).send('Internal server error')

@@ -2,6 +2,7 @@ import { Router } from 'express'
 import privilege from '../authenticate'
 import { UserPrivilege } from '../../types'
 import { connection } from '../aws'
+import type { QueryError, RowDataPacket } from 'mysql2'
 
 export const dashboard = Router()
 dashboard.use(privilege)
@@ -27,7 +28,7 @@ dashboard.get(`/`, async (req, res) => {
     connection.query(
       query,
       // [req.params.uid],
-      (err, results) => {
+      (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
           console.error(err)
           res.status(500).send('Internal Server error')

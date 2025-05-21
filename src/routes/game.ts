@@ -6,6 +6,7 @@ import { multer } from '../server'
 import { uploadFile } from '../util/s3'
 import * as fs from 'fs'
 import path from 'path'
+import type { QueryError, ResultSetHeader, RowDataPacket } from 'mysql2'
 
 export const game = Router()
 game.use(privilege)
@@ -14,7 +15,7 @@ game.get('/:gameID', async (req, res) => {
   connection.query(
     `SELECT * FROM games WHERE id = ? LIMIT 1`,
     [Number(req.params.gameID)],
-    (err, results) => {
+    (err: QueryError | null, results: RowDataPacket[]) => {
       if (err) {
         console.error(err)
         res.status(500).send('Internal Server Error')
@@ -72,83 +73,87 @@ game.post(
         otherLinks: data.otherLinks || '',
       }
 
-      connection.query(`INSERT INTO games SET ?`, game, async (err, result) => {
-        if (err) {
-          console.error(err)
-          res.status(500).send('Internal Server error')
+      connection.query<ResultSetHeader>(
+        `INSERT INTO games SET ?`,
+        game,
+        async (err, result) => {
+          if (err) {
+            console.error(err)
+            res.status(500).send('Internal Server error')
 
-          return
-        }
+            return
+          }
 
-        const id = result.insertId
+          const id = result.insertId
 
-        try {
-          await Promise.all([
-            (async () => {
-              await uploadFile(
-                `${process.env.AWS_BUCKET}`,
-                `${id}/thumbnail.png`,
-                files.thumbnail[0].path
-              )
-            })(),
-
-            (async () => {
-              if (files.banner) {
+          try {
+            await Promise.all([
+              (async () => {
                 await uploadFile(
                   `${process.env.AWS_BUCKET}`,
-                  `${id}/banner.png`,
-                  files.banner[0].path
+                  `${id}/thumbnail.png`,
+                  files.thumbnail[0].path
                 )
-              }
-            })(),
-          ])
-        } catch (error) {
-          console.error(error)
-          res.status(500).send('Internal Server error')
-          return
-        }
+              })(),
 
-        const settings: any = {
-          thumbnail: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/thumbnail.png`,
-        }
-
-        if (files.banner) {
-          settings.banner = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/banner.png`
-        }
-
-        connection.query(
-          `UPDATE games SET ? WHERE id = ?`,
-          [settings, id],
-          (err) => {
-            if (err) {
-              console.error(err)
-              res.status(500).send('Internal Server error')
-
-              return
-            }
-            res.send('Game added')
+              (async () => {
+                if (files.banner) {
+                  await uploadFile(
+                    `${process.env.AWS_BUCKET}`,
+                    `${id}/banner.png`,
+                    files.banner[0].path
+                  )
+                }
+              })(),
+            ])
+          } catch (error) {
+            console.error(error)
+            res.status(500).send('Internal Server error')
+            return
           }
-        )
 
-        fs.unlink(files.thumbnail[0].path, (err) => {
-          if (err) throw err
-        })
+          const settings: any = {
+            thumbnail: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/thumbnail.png`,
+          }
 
-        if (files.banner) {
-          fs.unlink(files.banner[0].path, (err) => {
+          if (files.banner) {
+            settings.banner = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/banner.png`
+          }
+
+          connection.query(
+            `UPDATE games SET ? WHERE id = ?`,
+            [settings, id],
+            (err) => {
+              if (err) {
+                console.error(err)
+                res.status(500).send('Internal Server error')
+
+                return
+              }
+              res.send('Game added')
+            }
+          )
+
+          fs.unlink(files.thumbnail[0].path, (err) => {
             if (err) throw err
           })
-        }
 
-        fs.readdir('uploads', (err, files) => {
-          if (err) throw err
-          for (const file of files) {
-            fs.unlink(path.join('uploads', file), (err) => {
+          if (files.banner) {
+            fs.unlink(files.banner[0].path, (err) => {
               if (err) throw err
             })
           }
-        })
-      })
+
+          fs.readdir('uploads', (err, files) => {
+            if (err) throw err
+            for (const file of files) {
+              fs.unlink(path.join('uploads', file), (err) => {
+                if (err) throw err
+              })
+            }
+          })
+        }
+      )
     } else {
       res.status(401).send('Unauthorized')
     }

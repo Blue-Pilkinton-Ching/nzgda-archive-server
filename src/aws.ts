@@ -1,5 +1,5 @@
 import { S3 } from '@aws-sdk/client-s3'
-import mysql from 'mysql'
+import mysql, { type QueryError } from 'mysql2'
 
 const region = 'ap-southeast-2'
 
@@ -11,19 +11,16 @@ const s3 = new S3({
   },
 })
 
-const connectionConfig: mysql.ConnectionConfig = {
+const connection = mysql.createConnection({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
   port: 25060,
   multipleStatements: true,
-}
+})
 
-const connection = mysql.createConnection(connectionConfig)
-
-// connect.
-connection.connect((err: { stack: string }) => {
+connection.connect((err: QueryError | null) => {
   if (err) {
     console.error('Error connecting to MySQL: ' + err.stack)
     return

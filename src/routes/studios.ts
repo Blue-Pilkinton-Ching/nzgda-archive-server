@@ -2,6 +2,7 @@ import { Router } from 'express'
 import privilege from '../authenticate'
 import { connection } from '../aws'
 import { UserPrivilege } from '../../types'
+import type { QueryError, RowDataPacket } from 'mysql2'
 
 export const studios = Router()
 studios.use(privilege)
@@ -21,11 +22,11 @@ studios.get('/:id', (req, res) => {
   connection.query(
     'SELECT * FROM studios WHERE id = ? LIMIT 1',
     [req.params.id],
-    (error, results) => {
+    (err: QueryError | null, results: RowDataPacket[]) => {
       if (results && results.length > 0) {
         res.send(results[0])
       } else {
-        console.error(error)
+        console.error(err)
         return res.status(500).send('Internal server error')
       }
     }

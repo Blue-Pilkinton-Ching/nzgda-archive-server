@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier'
 import * as admin from 'firebase-admin'
 import { connection } from './aws'
+import type { QueryError, RowDataPacket } from 'mysql2'
 
 export default async function privilege(
   req: Request,
@@ -28,7 +29,7 @@ export default async function privilege(
     connection.query(
       'SELECT * FROM admins WHERE uid = ?',
       [credential.uid],
-      (error, results) => {
+      (error: QueryError | null, results: RowDataPacket[]) => {
         if (error) {
           console.error('Error fetching user:', error)
           return res.status(500).send('Internal server error')
