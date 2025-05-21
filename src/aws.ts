@@ -3,7 +3,12 @@ import mysql, { type QueryError } from 'mysql2'
 
 const region = 'ap-southeast-2'
 
+// EVERYTHING IS ON DIGITAL OCEAN NOW.
+// Digital ocean is compatible with s3 apis.
+
 const s3 = new S3({
+  forcePathStyle: false,
+  endpoint: process.env.AWS_ENDPOINT,
   region,
   credentials: {
     accessKeyId: process.env.AWS_KEY || '',
