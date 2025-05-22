@@ -2,7 +2,7 @@ CREATE TABLE games (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
-    thumbnail VARCHAR(255) NOT NULL,
+    thumbnail VARCHAR(255), -- nullable
     banner VARCHAR(255), -- nullable
     approved BOOLEAN NOT NULL,
     featured BOOLEAN NOT NULL,
