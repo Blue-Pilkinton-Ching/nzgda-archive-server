@@ -113,11 +113,11 @@ game.post(
           }
 
           const settings: any = {
-            thumbnail: `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/thumbnail.png`,
+            thumbnail: `https://${process.env.AWS_BUCKET}.syd1.cdn.digitaloceanspaces.com/${id}/thumbnail.png`,
           }
 
           if (files.banner) {
-            settings.banner = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${id}/banner.png`
+            settings.banner = `https://${process.env.AWS_BUCKET}.syd1.cdn.digitaloceanspaces.com/${id}/banner.png`
           }
 
           connection.query(
@@ -238,11 +238,11 @@ game.patch(
       }
 
       if (files.thumbnail) {
-        data.thumbnail = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${gameID}/thumbnail.png`
+        data.thumbnail = `https://${process.env.AWS_BUCKET}.syd1.cdn.digitaloceanspaces.com/${gameID}/thumbnail.png`
       }
 
       if (files.banner) {
-        data.banner = `https://${process.env.AWS_BUCKET}.s3.ap-southeast-2.amazonaws.com/${gameID}/banner.png`
+        data.banner = `https://${process.env.AWS_BUCKET}.syd1.cdn.digitaloceanspaces.com/${gameID}/banner.png`
       }
 
       connection.query(
